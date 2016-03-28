@@ -5,16 +5,22 @@ Given(/^the following movies exist:$/) do |movies_table|
 end
 
 Then "the director of $a should be $b" do |movie, director|
-    if Movie.find_by(title: movie, director: director) == nil
-        return false
+    mov = Movie.find_by_title(movie)
+    if mov == nil
+       false
     else
-        return true
+        if mov.director == director
+            true
+        else
+            false
+        end
     end
 end
 
 When "I go to the edit page for \"$a\"" do |movie|
     mov = Movie.find_by_title(movie)
-    visit (movie_path(mov) + '/edit')
+    puts edit_movie_path(mov)
+    visit (edit_movie_path(mov))
 end
 
 When "I go to the details page for\"$a\"" do |movie|
