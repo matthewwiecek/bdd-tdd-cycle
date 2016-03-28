@@ -16,6 +16,11 @@ module NavigationHelpers
     when /^the home\s?page$/
       '/'
 
+    when "the edit page for \"$a\""
+      movie_path($a)+'/edit'
+      
+    when "the details page for\"$a\""
+      movies_path($a)
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
