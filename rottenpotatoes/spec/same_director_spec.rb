@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'route same director', :type => :routing do
   it 'routes GET /movies/same_director to movies#same_director' do
-     expect(get: '/movies/same_director').to route_to(controller: 'movies#same_director', action: 'show')
+     expect(get '/movies/same_director').to route_to(controller: 'movies', action: 'same_director')
   end
 end
 
@@ -14,13 +14,13 @@ describe MoviesController, :type => :controller do
   describe 'GET same director' do
    
     context "director exists" do
-      before(:each) {get :'/movies/same_director', :id => '1'}
+      before(:each) {get :same_director, :id => '1'}
       it "lists movies with same director" do
         expect(response).to render_template("same_director")
       end
     end
     context "director is blank" do
-      before(:each) {get :'movies/same_director', :id => '3'}
+      before(:each) {get :same_director, :id => '3'}
       
       it 'redirects to fail path' do
         expect(response).to redirect_to(movies_path)
