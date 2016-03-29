@@ -23,11 +23,11 @@ describe MoviesController, :type => :controller do
       before(:each) {get :'movies/same_director', :id => '3'}
       
       it 'redirects to fail path' do
-        expect(response).to redirect_to(movie_path(3))
+        expect(response).to redirect_to(movies_path)
       end
       
       it 'will set flash[:error]' do
-        expect(flash[:error]).to be_present
+        expect(flash[:warning]).to be_present
       end
     end
   end
