@@ -17,6 +17,15 @@ Then "the director of $a should be $b" do |movie, director|
     end
 end
 
+Given "I am on the home page" do
+    visit movies_path
+end
+
+#Then "I should be on the Similar Movies page for \"@a\"" do |movie|
+#    mov = Movie.find_by_title(movie)
+#    current_path.should == path_to('/movies/same_director?id='+mov.id)
+#end
+
 When "I go to the edit page for \"$a\"" do |movie|
     mov = Movie.find_by_title(movie)
     puts edit_movie_path(mov)

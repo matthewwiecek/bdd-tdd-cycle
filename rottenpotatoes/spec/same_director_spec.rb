@@ -7,8 +7,8 @@ describe 'route same director', :type => :routing do
 end
 
 describe MoviesController, :type => :controller do
-  let!(:first_movie) { Movie.create(:title => "Movie 1", :rating => 'G', :director => "James Cameron") }
-  let!(:second_movie) { Movie.create(:title => "Movie 2", :rating => 'G', :director => "James Cameron") }
+  let!(:first_movie) { Movie.create(:title => "Movie 2", :rating => 'G', :director => "James Cameron") }
+  let!(:second_movie) { Movie.create(:title => "Movie 1", :rating => 'G', :director => "James Cameron") }
   let!(:third_movie) { Movie.create(:title => "Movie 3", :rating => 'G', :director => nil) }
   
   describe 'GET same director' do
@@ -31,6 +31,30 @@ describe MoviesController, :type => :controller do
       end
     end
   end
+  
+  describe 'GET index' do
+    
+    context 'sorted' do
+      
+      it 'by title' do
+        get :index, :sort => 'title'
+        #get redirects the first time to set session
+        get :index, :sort => 'title'
+        movies = assigns(:movies)
+        sorted = movies.sort { |a,b| a.title <=> b.title }
+        expect(movies).to eq(sorted)
+      end
+      it 'by release date' do
+        get :index, :sort => 'release_date'
+        #get redirects the first time to set session
+        get :index, :sort => 'release_date'
+        movies = assigns(:movies)
+        sorted = movies.sort { |a,b| a.release_date <=> b.release_date }
+        expect(movies).to eq(sorted)
+      end
+    end
+  end
+  
 end
 
 describe Movie do
