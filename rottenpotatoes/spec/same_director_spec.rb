@@ -7,9 +7,9 @@ describe 'route same director', :type => :routing do
 end
 
 describe MoviesController, :type => :controller do
-  let!(:first_movie) { Movie.create(:title => "Movie 2", :rating => 'G', :director => "James Cameron") }
-  let!(:second_movie) { Movie.create(:title => "Movie 1", :rating => 'G', :director => "James Cameron") }
-  let!(:third_movie) { Movie.create(:title => "Movie 3", :rating => 'G', :director => nil) }
+  let!(:first_movie) { Movie.create(:title => "Movie 2", :release_date => '2016-01-01 [12:13:06]', :rating => 'G', :director => "James Cameron") }
+  let!(:second_movie) { Movie.create(:title => "Movie 1", :rating => 'G', :release_date => '2015-03-20 [12:00:00]', :director => "James Cameron") }
+  let!(:third_movie) { Movie.create(:title => "Movie 3", :rating => 'PG', :release_date => '2016-02-05 [00:00:00]', :director => nil) }
   
   describe 'GET same director' do
    
@@ -52,6 +52,51 @@ describe MoviesController, :type => :controller do
         sorted = movies.sort { |a,b| a.release_date <=> b.release_date }
         expect(movies).to eq(sorted)
       end
+    end
+    
+    context 'filter ratings' do
+      it 'get all' do
+        get :index, :ratings => Hash[Movie.all_ratings.map {|rating| [rating, rating]}]
+        #get redirects the first time to set session
+        get :index, :ratings => Hash[Movie.all_ratings.map {|rating| [rating, rating]}]
+        movies = assigns(:movies)
+        expect(movies.size).to eq(Movie.count)
+      end
+      
+      it 'get only g' do
+        get :index, :ratings => { :G => 1 }
+        #get redirects the first time to set session
+        get :index, :ratings => { :G => 1 }
+        movies = assigns(:movies)
+        movies.each do |mov|
+          expect(mov.rating).to eq('G')
+        end
+      end
+      
+      it 'get only pg' do
+        get :index, :ratings => { :PG => 1 }
+        #get redirects the first time to set session
+        get :index, :ratings => { :PG => 1 }
+        movies = assigns(:movies)
+        movies.each do |mov|
+          expect(mov.rating).to eq('PG')
+        end
+      end
+      
+    end
+  end
+  
+  describe 'record manipulation' do
+    
+    it 'create new record' do
+      post :create, :movie => {:title => 'mov7', :rating => 'R', :director => "Asriel Dreemuur"}
+      expect(Movie.find_by_director("Asriel Dreemuur").director).to eq('Asriel Dreemuur')
+    end
+    
+    it 'delete record' do
+      id = Movie.find_by_title('Movie 2').id
+      put :update, :id => id, :movie => {:title => "m", :release_date => '2016-01-01 [12:13:06]', :rating => 'G', :director => "James Cameron"}
+      expect(Movie.find(id).title).to eq('m')
     end
   end
   
