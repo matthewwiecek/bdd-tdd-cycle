@@ -93,10 +93,16 @@ describe MoviesController, :type => :controller do
       expect(Movie.find_by_director("Asriel Dreemuur").director).to eq('Asriel Dreemuur')
     end
     
-    it 'delete record' do
+    it 'update record' do
       id = Movie.find_by_title('Movie 2').id
       put :update, :id => id, :movie => {:title => "m", :release_date => '2016-01-01 [12:13:06]', :rating => 'G', :director => "James Cameron"}
       expect(Movie.find(id).title).to eq('m')
+    end
+    
+    it 'delete record' do
+      id = Movie.find_by_title('Movie 2').id
+      delete :destroy, :id => id
+      expect(Movie.find_by_title('Movie 2')).to eq(nil)
     end
   end
   
